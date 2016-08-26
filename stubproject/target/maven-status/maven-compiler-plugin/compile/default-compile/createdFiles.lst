@@ -1,0 +1,13 @@
+com\kushnarenko\dao\TimelineDao.class
+com\kushnarenko\model\Timeline.class
+com\kushnarenko\service\impl\UserServiceImpl.class
+com\kushnarenko\dao\AbstractDao.class
+com\kushnarenko\model\User.class
+com\kushnarenko\service\TimelineService.class
+com\kushnarenko\service\UserService.class
+com\kushnarenko\dao\UserDao.class
+com\kushnarenko\dao\impl\UserDaoImpl.class
+com\kushnarenko\service\impl\TimelineServiceImpl.class
+com\kushnarenko\model\Role.class
+com\kushnarenko\StubprojectApplication.class
+com\kushnarenko\dao\impl\TimelineDaoImpl.class
