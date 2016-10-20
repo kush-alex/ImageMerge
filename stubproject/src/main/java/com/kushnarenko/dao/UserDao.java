@@ -7,6 +7,8 @@ public interface UserDao {
 
     User findByUsername(String username);
 
+    User findByFacebookId(String username);
+
     void saveUser(User user);
 
     List<User> findAllUsers();

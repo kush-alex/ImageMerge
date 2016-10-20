@@ -27,6 +27,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByFacebookId(String facebookId) {
+        return userDao.findByFacebookId(facebookId);
+    }
+
+    @Override
     public List<User> findAllUser() {
         return userDao.findAllUsers();
     }

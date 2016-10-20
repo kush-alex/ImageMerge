@@ -10,6 +10,8 @@ public interface UserService {
 
     void saveUser(User user);
 
+    User findByFacebookId(String facebookId);
+
     List<User> findAllUser();
 
 }

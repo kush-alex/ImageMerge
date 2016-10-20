@@ -1,33 +1,47 @@
 package com.kushnarenko.controller;
 
+import com.kushnarenko.model.Role;
+import com.kushnarenko.model.Thing;
 import com.kushnarenko.model.User;
+import com.kushnarenko.service.ThingService;
 import com.kushnarenko.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.social.connect.ConnectionRepository;
-import org.springframework.social.facebook.api.Facebook;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.Set;
 
 @RestController
+@RequestMapping("user")
 public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    ThingService thingService;
 
-    @RequestMapping("/user")
+    @RequestMapping(method = RequestMethod.GET)
     public Principal user(Principal principal) {
-
-        System.out.println(principal.getName());
-
-        
-        User user = new User();
-        user.setName(principal.getName());
+        String facebookId = principal.getName();
+        User user = userService.findByFacebookId(facebookId);
+        if (user == null) {
+            user = new User();
+            String[] split = ((OAuth2Authentication) principal).getUserAuthentication().getDetails().toString().split("((.)*name=)|(,(.)*)");
+            user.setName(split[1]);
+            user.setFacebookId(facebookId);
+            user.setRole(Role.USER);
+            userService.saveUser(user);
+        }
         return principal;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{facebookId}/things")
+    public Set<Thing> getUserThings(@PathVariable String facebookId) {
+        return thingService.findAllUserThings(facebookId);
     }
 }

@@ -4,7 +4,9 @@ import com.kushnarenko.dao.AbstractDao;
 import com.kushnarenko.dao.UserDao;
 import com.kushnarenko.model.User;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,7 +16,13 @@ public class UserDaoImpl extends AbstractDao<Long, User> implements UserDao {
 
     @Override
     public User findByUsername(String username) {
-        List<User> users = getSession().createCriteria(User.class).add(Expression.eq("username", username)).list();
+        List<User> users = getSession().createCriteria(User.class).add(Restrictions.eq("username", username)).list();
+        return users.isEmpty() ? null : users.get(0);
+    }
+
+    @Override
+    public User findByFacebookId(String facebookId) {
+        List<User> users = getSession().createCriteria(User.class).setFetchMode("user", FetchMode.JOIN).add(Restrictions.eq("facebookId", facebookId)).list();
         return users.isEmpty() ? null : users.get(0);
     }
 
@@ -25,7 +33,7 @@ public class UserDaoImpl extends AbstractDao<Long, User> implements UserDao {
 
     @Override
     public List<User> findAllUsers() {
-        Criteria criteria = createEntityCriteria();
+        Criteria criteria = createThingCriteria();
         return (List<User>) criteria.list();
     }
 
