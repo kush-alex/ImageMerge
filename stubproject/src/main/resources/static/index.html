@@ -23,10 +23,15 @@
             </a>
         </div>
         <div class="container" ng-show="home.authenticated">
-            <h1>Loged</h1>
-            Logged in as:
-            <span ng-bind="home.user"></span>
-            <span ng-bind="home.things"></span>
+            <h1><span ng-bind="home.user"></span></h1>
+            <table id="table" class="table">
+                <thead>
+                <tr>
+                    <th data-field="id">ID</th>
+                    <th data-field="field">Item Field</th>
+                </tr>
+                </thead>
+            </table>
             <div>
                 <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
             </div>
@@ -34,6 +39,8 @@
 
             </ul>
         </div>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
         <script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
         <script type="text/javascript" src="/js/ang.js"></script>
     </body>

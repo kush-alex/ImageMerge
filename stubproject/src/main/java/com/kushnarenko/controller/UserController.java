@@ -40,6 +40,11 @@ public class UserController {
         return principal;
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/findByFacebookId/{facebookId}")
+    public User user(@PathVariable String facebookId) {
+        return userService.findByFacebookId(facebookId);
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/{facebookId}/things")
     public Set<Thing> getUserThings(@PathVariable String facebookId) {
         return thingService.findAllUserThings(facebookId);

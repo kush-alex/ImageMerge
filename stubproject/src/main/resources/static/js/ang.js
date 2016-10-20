@@ -7,9 +7,13 @@ angular.module("app", []).config(function ($httpProvider) {
         self.user = data.userAuthentication.details.name;
         self.authenticated = true;
         console.log(data.userAuthentication)
-        $http.get("/user/"+self.auth.details.id+"/things").success(function (data) {
-                var data = JSON.parse(data).things;
-                self.things = data;
+        $http.get("/user/findByFacebookId/"+self.auth.details.id).success(function (data) {
+                $('#table').bootstrapTable({
+                    data: data.things,
+                    formatLoadingMessage: function () {
+                                return '';
+                    }
+                });
         })
     }).error(function () {
         self.user = "N/A";
