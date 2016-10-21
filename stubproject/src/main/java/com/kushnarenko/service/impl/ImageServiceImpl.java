@@ -11,6 +11,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import static com.kushnarenko.constants.PathConstants.IMAGE_PATH;
+
 @Service("imageService")
 @Transactional
 public class ImageServiceImpl implements ImageService {
@@ -21,7 +23,7 @@ public class ImageServiceImpl implements ImageService {
             try {
                 byte[] bytes = multipartFile.getBytes();
                 BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(name)));
+                        new BufferedOutputStream(new FileOutputStream(new File(IMAGE_PATH + name)));
                 stream.write(bytes);
                 stream.close();
                 return "You successfully uploaded " + name + " into " + name + "-uploaded !";

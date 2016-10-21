@@ -26,8 +26,8 @@ public class Thing {
     private long id;
 
     @NotEmpty
-    @Size(min = 8, max = 60)
-    @Column(name = "FIELD", unique = true, nullable = false)
+    @Size(max = 60)
+    @Column(name = "FIELD", nullable = false)
     private String field;
 
     @ManyToOne
@@ -35,17 +35,14 @@ public class Thing {
     @JoinColumn(name="USER_ID")
     private User user;
 
-    @ManyToOne
     @JsonBackReference
     @JoinColumn(name="IMAGE1")
     private String image1;
 
-    @ManyToOne
     @JsonBackReference
     @JoinColumn(name="IMAGE2")
     private String image2;
 
-    @ManyToOne
     @JsonBackReference
     @JoinColumn(name="RESULT_IMAGE")
     private String resultImage;

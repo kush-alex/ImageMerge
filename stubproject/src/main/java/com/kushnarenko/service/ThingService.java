@@ -7,7 +7,9 @@ import java.util.Set;
 
 public interface ThingService {
 
-    void saveThing(Thing Thing);
+    void saveThing(Thing thing);
+
+    void updateThing(Thing thing);
 
     Set<Thing> findAllUserThings(String facebookId);
 

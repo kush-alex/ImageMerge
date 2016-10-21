@@ -25,24 +25,82 @@
 </div>
 <div class="container" ng-show="home.authenticated">
     <h1><span ng-bind="home.user"></span></h1>
-    <i>Uploading File With Ajax</i><br/>
-    <form id="form2" method="post" action="/user/uploadImage" enctype="multipart/form-data">
-        <div id="selectThing">
 
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Upload new record
         </div>
-        <input name="file1" id="file1" type="file"/><br/>
-        <input name="file2" id="file2" type="file"/><br/>
-    </form>
-    <button value="Submit" class="btn btn-primary" onclick="uploadJqueryForm()">Upload</button>
+
+        <div class="panel-body">
+            <form id="form2" method="post" action="/user/createRecord" enctype="multipart/form-data"
+                  class="form-inline ">
+                <div class="form-group">
+                    <label for="recordName">Record name</label>
+                    <input name="recordName" type="text" class="form-control" id="recordName" aria-describedby="recordNameHelp" placeholder="Enter name">
+                    <small id="recordNameHelp" class="form-text text-muted">Please, input name for your record.</small>
+                </div>
+                <div class="form-group">
+                    <label for="file1">File input</label>
+                    <input name="file1" id="file3" type="file" class="form-control-file"
+                           aria-describedby="fileHelp3"/><br/>
+                    <small id="fileHelp3" class="form-text text-muted">Please choose the first image.</small>
+                </div>
+                <div class="form-group">
+                    <label for="file2">File input</label>
+                    <input name="file2" id="file4" type="file" class="form-control-file"
+                           aria-describedby="fileHelp4"><br/>
+                    <small id="fileHelp4" class="form-text text-muted">Please choose the first image.</small>
+                </div>
+                <button value="Submit" class="btn btn-primary" onclick="uploadJqueryForm()">Upload</button>
+            </form>
+        </div>
+    </div>
+
+
     <div id="result"></div>
-    <table id="table" class="table">
+    <table id="recordTable" class="table">
         <thead>
         <tr>
             <th data-field="id">ID</th>
-            <th data-field="field">Item Field</th>
+            <th data-field="field">Name</th>
         </tr>
         </thead>
     </table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Update images
+        </div>
+        <div class="panel-body">
+            <form id="form1" method="post" action="/user/uploadImage" enctype="multipart/form-data"
+                  class="form-inline ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Choose record to update
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div id="selectThing">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="file1">File input</label>
+                    <input name="file1" id="file1" type="file" class="form-control-file"
+                           aria-describedby="fileHelp1"/><br/>
+                    <small id="fileHelp1" class="form-text text-muted">Please choose the first image.</small>
+                </div>
+                <div class="form-group">
+                    <label for="file2">File input</label>
+                    <input name="file2" id="file2" type="file" class="form-control-file"
+                           aria-describedby="fileHelp2"><br/>
+                    <small id="fileHelp2" class="form-text text-muted">Please choose the first image.</small>
+                </div>
+                <button value="Submit" class="btn btn-primary" onclick="uploadJqueryForm()">Upload</button>
+            </form>
+        </div>
+    </div>
     <div>
         <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
     </div>

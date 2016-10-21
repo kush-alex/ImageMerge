@@ -12,6 +12,8 @@ public interface ApplicationFacade {
 
     String saveImage(MultipartFile file1, MultipartFile file2, String thingId);
 
+    Thing createRecord(MultipartFile file1, MultipartFile file2, String userFacebookId, String recordName);
+
     Principal findOrCreateUser(Principal principal);
 
     User findUser(String facebookId);

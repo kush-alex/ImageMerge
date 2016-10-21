@@ -17,8 +17,9 @@ public class ThingDaoImpl extends AbstractDao<Long, Thing> implements ThingDao {
 
 
     @Override
-    public void saveThing(Thing Thing) {
-        persist(Thing);
+    public void saveThing(Thing thing) {
+        getSession().save(thing);
+
     }
 
     @Override

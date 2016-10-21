@@ -3,12 +3,15 @@ package com.kushnarenko.controller;
 import com.kushnarenko.facade.ApplicationFacade;
 import com.kushnarenko.model.Role;
 import com.kushnarenko.model.Thing;
-import com.kushnarenko.model.User;
+
+import org.springframework.security.core.userdetails.User;
+
 import com.kushnarenko.service.ImageService;
 import com.kushnarenko.service.ThingService;
 import com.kushnarenko.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,7 +40,7 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/findByFacebookId/{facebookId}")
-    public User user(@PathVariable String facebookId) {
+    public com.kushnarenko.model.User user(@PathVariable String facebookId) {
         return applicationFacade.findUser(facebookId);
     }
 
@@ -51,6 +54,15 @@ public class UserController {
     @ResponseBody
     String uploadImage(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2, @RequestParam("thing") String thing) {
         return applicationFacade.saveImage(file1, file2, thing);
+    }
+
+    @RequestMapping(value = "/createRecord", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Thing createRecord(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2, @RequestParam("recordName") String recordName) {
+        String facebookId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return applicationFacade.createRecord(file1, file2, facebookId, recordName);
     }
 
 }

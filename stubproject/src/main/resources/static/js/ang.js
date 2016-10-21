@@ -15,7 +15,7 @@ angular.module("app", []).config(function ($httpProvider) {
                     options+='<p><input name="thing" type="radio" value="'+id+'">'+id+'</p>';
                 }
                 document.getElementById('selectThing').innerHTML = options;
-                $('#table').bootstrapTable({
+                $('#recordTable').bootstrapTable({
                     data: data.things,
                     formatLoadingMessage: function () {
                                 return '';

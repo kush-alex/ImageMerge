@@ -25,6 +25,11 @@ public class ThingServiceImpl implements ThingService {
     }
 
     @Override
+    public void updateThing(Thing thing) {
+        thingDao.saveThing(thing);
+    }
+
+    @Override
     public Set<Thing> findAllUserThings(String facebookId) {
         return thingDao.findAllUserThings(facebookId);
     }

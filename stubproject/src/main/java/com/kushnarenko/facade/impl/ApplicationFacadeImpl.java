@@ -1,5 +1,6 @@
 package com.kushnarenko.facade.impl;
 
+import com.kushnarenko.constants.PathConstants;
 import com.kushnarenko.facade.ApplicationFacade;
 import com.kushnarenko.model.Role;
 import com.kushnarenko.model.Thing;
@@ -11,6 +12,7 @@ import com.kushnarenko.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -64,5 +66,22 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         imageService.saveImage(file1, file1Name);
         imageService.saveImage(file2, file2Name);
         return "Its Ok";
+    }
+
+    @Override
+    @Transactional
+    public Thing createRecord(MultipartFile file1, MultipartFile file2, String userFacebookId, String recordName) {
+        Thing thing = new Thing();
+        thing.setField(recordName);
+        thing.setUser(userService.findByFacebookId(userFacebookId));
+        thingService.saveThing(thing);
+        String file1Name = thing.getId() + "1" + IMAGE_TYPE;
+        String file2Name = thing.getId() + "2" + IMAGE_TYPE;
+        imageService.saveImage(file1, file1Name);
+        imageService.saveImage(file2, file2Name);
+        thing.setImage1(file1Name);
+        thing.setImage2(file2Name);
+        thingService.updateThing(thing);
+        return thing;
     }
 }
