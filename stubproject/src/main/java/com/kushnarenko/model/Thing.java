@@ -35,6 +35,21 @@ public class Thing {
     @JoinColumn(name="USER_ID")
     private User user;
 
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name="IMAGE1")
+    private String image1;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name="IMAGE2")
+    private String image2;
+
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name="RESULT_IMAGE")
+    private String resultImage;
+
     @Override
     public String toString() {
         return "Thing{" +

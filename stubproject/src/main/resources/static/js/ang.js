@@ -8,6 +8,13 @@ angular.module("app", []).config(function ($httpProvider) {
         self.authenticated = true;
         console.log(data.userAuthentication)
         $http.get("/user/findByFacebookId/"+self.auth.details.id).success(function (data) {
+
+                var options = '';
+                for(var i = 0; i < data.things.length; i++){
+                    var id =data.things[i].id;
+                    options+='<p><input name="thing" type="radio" value="'+id+'">'+id+'</p>';
+                }
+                document.getElementById('selectThing').innerHTML = options;
                 $('#table').bootstrapTable({
                     data: data.things,
                     formatLoadingMessage: function () {

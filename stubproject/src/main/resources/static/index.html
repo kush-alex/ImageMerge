@@ -1,47 +1,61 @@
 <html lang="en">
-    <head>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <title>Demo</title>
-        <meta name="description" content=""/>
-        <meta name="viewport" content="width=device-width"/>
-        <base href="/"/>
-        <link rel="stylesheet" type="text/css"
-              href="/webjars/bootstrap/css/bootstrap.min.css"/>
-        <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-        <script type="text/javascript"
-                src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-    </head>
-    <body ng-app="app" ng-controller="home as home">
-        <div class="container" ng-show="!home.authenticated">
-            <h1>Login</h1>
-            With Facebook:
-            <a href="/login">
-                <div>
-                    <button class="btn btn-primary">Login</button>
-                </div>
-            </a>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Demo</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <base href="/"/>
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <script type="text/javascript"
+            src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="home as home">
+<div class="container" ng-show="!home.authenticated">
+    <h1>Login</h1>
+    With Facebook:
+    <a href="/login">
+        <div>
+            <button class="btn btn-primary">Login</button>
         </div>
-        <div class="container" ng-show="home.authenticated">
-            <h1><span ng-bind="home.user"></span></h1>
-            <table id="table" class="table">
-                <thead>
-                <tr>
-                    <th data-field="id">ID</th>
-                    <th data-field="field">Item Field</th>
-                </tr>
-                </thead>
-            </table>
-            <div>
-                <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
-            </div>
-            <ul>
+    </a>
+</div>
+<div class="container" ng-show="home.authenticated">
+    <h1><span ng-bind="home.user"></span></h1>
+    <i>Uploading File With Ajax</i><br/>
+    <form id="form2" method="post" action="/user/uploadImage" enctype="multipart/form-data">
+        <div id="selectThing">
 
-            </ul>
         </div>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
-        <script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
-        <script type="text/javascript" src="/js/ang.js"></script>
-    </body>
+        <input name="file1" id="file1" type="file"/><br/>
+        <input name="file2" id="file2" type="file"/><br/>
+    </form>
+    <button value="Submit" class="btn btn-primary" onclick="uploadJqueryForm()">Upload</button>
+    <div id="result"></div>
+    <table id="table" class="table">
+        <thead>
+        <tr>
+            <th data-field="id">ID</th>
+            <th data-field="field">Item Field</th>
+        </tr>
+        </thead>
+    </table>
+    <div>
+        <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
+    </div>
+
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
+<script type="text/javascript" src="/js/ang.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+</body>
 </html>
