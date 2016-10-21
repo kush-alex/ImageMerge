@@ -10,6 +10,7 @@ import com.kushnarenko.service.ThingService;
 import com.kushnarenko.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,10 +71,11 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
     @Override
     @Transactional
-    public Thing createRecord(MultipartFile file1, MultipartFile file2, String userFacebookId, String recordName) {
+    public Thing createRecord(MultipartFile file1, MultipartFile file2, String recordName) {
+        String facebookId = SecurityContextHolder.getContext().getAuthentication().getName();
         Thing thing = new Thing();
         thing.setField(recordName);
-        thing.setUser(userService.findByFacebookId(userFacebookId));
+        thing.setUser(userService.findByFacebookId(facebookId));
         thingService.saveThing(thing);
         String file1Name = thing.getId() + "1" + IMAGE_TYPE;
         String file2Name = thing.getId() + "2" + IMAGE_TYPE;

@@ -12,9 +12,10 @@ angular.module("app", []).config(function ($httpProvider) {
                 var options = '';
                 for(var i = 0; i < data.things.length; i++){
                     var id =data.things[i].id;
-                    options+='<p><input name="thing" type="radio" value="'+id+'">'+id+'</p>';
+                    var field =data.things[i].field;
+                    options+='<option value="'+id+'">'+field+'</p>';
                 }
-                document.getElementById('selectThing').innerHTML = options;
+                document.getElementById('chooseRecord').innerHTML = options;
                 $('#recordTable').bootstrapTable({
                     data: data.things,
                     formatLoadingMessage: function () {

@@ -6,57 +6,67 @@
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width"/>
     <base href="/"/>
-    <link rel="stylesheet" type="text/css"
-          href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.0.0/bootstrap-social.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script src="http://malsup.github.com/jquery.form.js"></script>
-    <script type="text/javascript"
-            src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+
 </head>
 <body ng-app="app" ng-controller="home as home">
 <div class="container" ng-show="!home.authenticated">
-    <h1>Login</h1>
-    With Facebook:
-    <a href="/login">
-        <div>
-            <button class="btn btn-primary">Login</button>
+    <div id="loginbox" style="margin-top:200px;" class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-2">
+        <div class="panel">
+            <div style="padding-top:30px" class="panel-body">
+
+                <h1>Login</h1>
+                <a href="/login">
+                    <div>
+                        <button class="btn btn-block btn-social btn-lg btn-facebook">
+                            <i class="fa fa-facebook"></i>Sign in with Facebook
+                        </button>
+                    </div>
+                </a>
+
+            </div>
         </div>
-    </a>
+    </div>
 </div>
 <div class="container" ng-show="home.authenticated">
-    <h1><span ng-bind="home.user"></span></h1>
-
+    <div class="container-fluid" style="padding-top:40px">
+        <div class="row">
+            <div class="col-md-6" style="padding-bottom:20px">
+                <h1><span ng-bind="home.user"></span></h1>
+            </div>
+        </div>
+    </div>
     <div class="panel panel-default">
         <div class="panel-heading">
             Upload new record
         </div>
-
         <div class="panel-body">
             <form id="form2" method="post" action="/user/createRecord" enctype="multipart/form-data"
                   class="form-inline ">
                 <div class="form-group">
                     <label for="recordName">Record name</label>
-                    <input name="recordName" type="text" class="form-control" id="recordName" aria-describedby="recordNameHelp" placeholder="Enter name">
+                    <input name="recordName" type="text" class="form-control" id="recordName" required aria-describedby="recordNameHelp" placeholder="Enter name">
                     <small id="recordNameHelp" class="form-text text-muted">Please, input name for your record.</small>
                 </div>
                 <div class="form-group">
                     <label for="file1">File input</label>
-                    <input name="file1" id="file3" type="file" class="form-control-file"
-                           aria-describedby="fileHelp3"/><br/>
+                    <input name="file1" id="file3" type="file" class="form-control-file" accept="image/*" aria-describedby="fileHelp3"/><br/>
                     <small id="fileHelp3" class="form-text text-muted">Please choose the first image.</small>
                 </div>
                 <div class="form-group">
                     <label for="file2">File input</label>
-                    <input name="file2" id="file4" type="file" class="form-control-file"
-                           aria-describedby="fileHelp4"><br/>
+                    <input name="file2" id="file4" type="file" class="form-control-file" accept="image/*" aria-describedby="fileHelp4"><br/>
                     <small id="fileHelp4" class="form-text text-muted">Please choose the first image.</small>
                 </div>
                 <button value="Submit" class="btn btn-primary" onclick="uploadJqueryForm()">Upload</button>
             </form>
         </div>
     </div>
-
-
     <div id="result"></div>
     <table id="recordTable" class="table">
         <thead>
@@ -71,13 +81,17 @@
             Update images
         </div>
         <div class="panel-body">
-            <form id="form1" method="post" action="/user/uploadImage" enctype="multipart/form-data"
-                  class="form-inline ">
+            <form id="form1" method="post" action="/user/uploadImage" enctype="multipart/form-data" class="form-inline ">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         Choose record to update
                     </div>
                     <div class="panel-body">
+                        <div class="form-group">
+                            <label for="chooseRecord">Record:</label>
+                            <select class="form-control" id="chooseRecord" name="thing">
+                            </select>
+                        </div>
                         <div class="form-group">
                             <div id="selectThing">
 
@@ -87,28 +101,24 @@
                 </div>
                 <div class="form-group">
                     <label for="file1">File input</label>
-                    <input name="file1" id="file1" type="file" class="form-control-file"
-                           aria-describedby="fileHelp1"/><br/>
+                    <input name="file1" id="file1" type="file" class="form-control-file" accept="image/*" aria-describedby="fileHelp1"/><br/>
                     <small id="fileHelp1" class="form-text text-muted">Please choose the first image.</small>
                 </div>
                 <div class="form-group">
                     <label for="file2">File input</label>
-                    <input name="file2" id="file2" type="file" class="form-control-file"
-                           aria-describedby="fileHelp2"><br/>
+                    <input name="file2" id="file2" type="file" class="form-control-file" accept="image/*" aria-describedby="fileHelp2"><br/>
                     <small id="fileHelp2" class="form-text text-muted">Please choose the first image.</small>
                 </div>
                 <button value="Submit" class="btn btn-primary" onclick="uploadJqueryForm()">Upload</button>
             </form>
         </div>
     </div>
-    <div>
+    <div style="padding-bottom:40px">
         <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
     </div>
-
 </div>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>

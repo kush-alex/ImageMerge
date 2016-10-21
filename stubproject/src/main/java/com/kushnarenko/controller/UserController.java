@@ -1,18 +1,10 @@
 package com.kushnarenko.controller;
 
 import com.kushnarenko.facade.ApplicationFacade;
-import com.kushnarenko.model.Role;
 import com.kushnarenko.model.Thing;
-
-import org.springframework.security.core.userdetails.User;
-
-import com.kushnarenko.service.ImageService;
-import com.kushnarenko.service.ThingService;
-import com.kushnarenko.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,9 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.security.Principal;
 import java.util.Set;
 
@@ -60,9 +49,7 @@ public class UserController {
     public
     @ResponseBody
     Thing createRecord(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2, @RequestParam("recordName") String recordName) {
-        String facebookId = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        return applicationFacade.createRecord(file1, file2, facebookId, recordName);
+        return applicationFacade.createRecord(file1, file2, recordName);
     }
 
 }

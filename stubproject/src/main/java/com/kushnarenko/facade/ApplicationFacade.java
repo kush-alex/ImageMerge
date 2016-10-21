@@ -12,7 +12,7 @@ public interface ApplicationFacade {
 
     String saveImage(MultipartFile file1, MultipartFile file2, String thingId);
 
-    Thing createRecord(MultipartFile file1, MultipartFile file2, String userFacebookId, String recordName);
+    Thing createRecord(MultipartFile file1, MultipartFile file2, String recordName);
 
     Principal findOrCreateUser(Principal principal);
 
