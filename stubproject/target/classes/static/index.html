@@ -1,0 +1,119 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Demo</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <base href="/"/>
+    <link rel="stylesheet" type="text/css"
+          href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <script type="text/javascript"
+            src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body ng-app="app" ng-controller="home as home">
+<div class="container" ng-show="!home.authenticated">
+    <h1>Login</h1>
+    With Facebook:
+    <a href="/login">
+        <div>
+            <button class="btn btn-primary">Login</button>
+        </div>
+    </a>
+</div>
+<div class="container" ng-show="home.authenticated">
+    <h1><span ng-bind="home.user"></span></h1>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Upload new record
+        </div>
+
+        <div class="panel-body">
+            <form id="form2" method="post" action="/user/createRecord" enctype="multipart/form-data"
+                  class="form-inline ">
+                <div class="form-group">
+                    <label for="recordName">Record name</label>
+                    <input name="recordName" type="text" class="form-control" id="recordName" aria-describedby="recordNameHelp" placeholder="Enter name">
+                    <small id="recordNameHelp" class="form-text text-muted">Please, input name for your record.</small>
+                </div>
+                <div class="form-group">
+                    <label for="file1">File input</label>
+                    <input name="file1" id="file3" type="file" class="form-control-file"
+                           aria-describedby="fileHelp3"/><br/>
+                    <small id="fileHelp3" class="form-text text-muted">Please choose the first image.</small>
+                </div>
+                <div class="form-group">
+                    <label for="file2">File input</label>
+                    <input name="file2" id="file4" type="file" class="form-control-file"
+                           aria-describedby="fileHelp4"><br/>
+                    <small id="fileHelp4" class="form-text text-muted">Please choose the first image.</small>
+                </div>
+                <button value="Submit" class="btn btn-primary" onclick="uploadJqueryForm()">Upload</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="result"></div>
+    <table id="recordTable" class="table">
+        <thead>
+        <tr>
+            <th data-field="id">ID</th>
+            <th data-field="field">Name</th>
+        </tr>
+        </thead>
+    </table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Update images
+        </div>
+        <div class="panel-body">
+            <form id="form1" method="post" action="/user/uploadImage" enctype="multipart/form-data"
+                  class="form-inline ">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Choose record to update
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div id="selectThing">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="file1">File input</label>
+                    <input name="file1" id="file1" type="file" class="form-control-file"
+                           aria-describedby="fileHelp1"/><br/>
+                    <small id="fileHelp1" class="form-text text-muted">Please choose the first image.</small>
+                </div>
+                <div class="form-group">
+                    <label for="file2">File input</label>
+                    <input name="file2" id="file2" type="file" class="form-control-file"
+                           aria-describedby="fileHelp2"><br/>
+                    <small id="fileHelp2" class="form-text text-muted">Please choose the first image.</small>
+                </div>
+                <button value="Submit" class="btn btn-primary" onclick="uploadJqueryForm()">Upload</button>
+            </form>
+        </div>
+    </div>
+    <div>
+        <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
+    </div>
+
+</div>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+<script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
+<script type="text/javascript" src="/js/ang.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+</body>
+</html>
