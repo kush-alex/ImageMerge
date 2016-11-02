@@ -14,26 +14,21 @@ columnsNum = img.width %/% partLen + additionColumn
 additionRow <- if (img.height %% partLen > 0) 1 else 0
 rowNum <- img.height %/% partLen + additionRow
 
-X <- 0
+Y <- 0
 
 print(sprintf("Col %s,Row %s",columnsNum, rowNum))
 
-for (column in 0:(columnsNum)) {
-
-}
-
-
-
-for (column in 1:(columnsNum)) {
-  Y <- 0
-  part.width <- if((img.width-(column*partLen))<partLen) (img.width-((column)*partLen)) else partLen
-  for (row in 1:(rowNum)) {
-    part.height <- if((img.height-(row*partLen))<partLen) (img.height-((row)*partLen)) else partLen
-    print(sprintf("%s %s %s , %s %s %s",column, X, X+part.width,row, Y, Y+part.height))
+while (Y<img.width) {
+  part.width <- if((Y+partLen)>img.width) (img.width-Y) else partLen
+  X <- 0
+  while (X<img.height) {
+    part.height <- if((X+partLen)>img.height) (img.height-X) else partLen
+    print(sprintf("%s %s , %s %s", X, X+part.height, Y, Y+part.width))
     
-    part <- img[X:(X+part.width), Y:(Y+part.height), ]
+    part <- img[Y:(Y+part.width), X:(X+part.height), ]
     #display(part)
-    Y <- Y + partLen
+    X <- X + part.height
   }
-  X <- X + partLen
+  Y <- Y + part.width
 }
+
