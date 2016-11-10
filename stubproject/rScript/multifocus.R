@@ -1,5 +1,6 @@
-library("EBImage")
-img <- readImage("1.jpg")
+library(EBImage)
+
+img <- readImage("testna_slika6b.jpg")
 
 partLen = 89
 
@@ -18,8 +19,8 @@ while (Y<img.width) {
     # print(sprintf("%s %s , %s %s", X, X+part.height, Y, Y+part.width))
     
     part <- img[Y:(Y+part.width), X:(X+part.height), ]
-    display(round(part/max(part),0))
-    
+    #display(round(part/max(part),0))
+    #print(laplacian(part, normalised = FALSE))
     # display(part)
     X <- X + part.height
   }
