@@ -1,6 +1,5 @@
 package com.kushnarenko.facade.impl;
 
-import com.kushnarenko.constants.PathConstants;
 import com.kushnarenko.facade.ApplicationFacade;
 import com.kushnarenko.model.Role;
 import com.kushnarenko.model.Thing;
@@ -9,6 +8,9 @@ import com.kushnarenko.service.ImageService;
 import com.kushnarenko.service.ThingService;
 import com.kushnarenko.service.UserService;
 
+import org.apache.commons.compress.utils.IOUtils;
+import org.rosuda.JRI.REXP;
+import org.rosuda.JRI.Rengine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.security.Principal;
 import java.util.Set;
 
@@ -85,5 +90,28 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         thing.setImage2(file2Name);
         thingService.updateThing(thing);
         return thing;
+    }
+
+    @Override
+    public MultipartFile getFusedImage(String itemId) {
+        Thing thing = thingService.findById(itemId);
+
+        try {
+            ProcessBuilder builder = new ProcessBuilder("Rscript", "D:/temp/StubSpringProject/stubproject/rScript/script.R", thing.getImage1(), thing.getImage2());
+            builder.redirectErrorStream(true);
+            Process p = builder.start();
+            BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while (true) {
+                line = r.readLine();
+                if (line == null) {
+                    break;
+                }
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

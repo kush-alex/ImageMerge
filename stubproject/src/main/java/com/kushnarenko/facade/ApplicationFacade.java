@@ -20,4 +20,5 @@ public interface ApplicationFacade {
 
     Set<Thing> getUserThings(String facebookId);
 
+    MultipartFile getFusedImage(String itemId);
 }

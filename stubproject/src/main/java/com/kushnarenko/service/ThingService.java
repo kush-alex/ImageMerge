@@ -11,6 +11,8 @@ public interface ThingService {
 
     void updateThing(Thing thing);
 
+    Thing findById(String id);
+
     Set<Thing> findAllUserThings(String facebookId);
 
 }

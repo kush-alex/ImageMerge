@@ -14,14 +14,15 @@ angular.module("app", []).config(function ($httpProvider) {
                     var id =data.things[i].id;
                     var field =data.things[i].field;
                     options+='<option value="'+id+'">'+field+'</p>';
+                    $('#recordTable').append("<tr><td>"+ id +"</td><td>"+ field +"</td><td><form id='form"+id+"' method='get' action='/image'  class='form-inline'><input type='hidden' value='"+id+"' name='item'/><button value='Get image' class='btn btn-primary'>Get image</button></form></td><tr>")
                 }
                 document.getElementById('chooseRecord').innerHTML = options;
-                $('#recordTable').bootstrapTable({
+                /*$('#recordTable').bootstrapTable({
                     data: data.things,
                     formatLoadingMessage: function () {
                                 return '';
                     }
-                });
+                });*/
         })
     }).error(function () {
         self.user = "N/A";
