@@ -3,6 +3,7 @@ package com.kushnarenko.controller;
 import com.kushnarenko.facade.ApplicationFacade;
 import com.kushnarenko.model.Thing;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Set;
 
 @RestController
@@ -42,14 +44,14 @@ public class UserController {
     public
     @ResponseBody
     String uploadImage(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2, @RequestParam("thing") String thing) {
-        return applicationFacade.saveImage(file1, file2, thing);
+        return applicationFacade.saveImage(Arrays.asList(file1, file2), thing);
     }
 
     @RequestMapping(value = "/createRecord", method = RequestMethod.POST)
     public
     @ResponseBody
     Thing createRecord(@RequestParam("file1") MultipartFile file1, @RequestParam("file2") MultipartFile file2, @RequestParam("recordName") String recordName) {
-        return applicationFacade.createRecord(file1, file2, recordName);
+        return applicationFacade.createRecord(Arrays.asList(file1, file2), recordName);
     }
 
 }

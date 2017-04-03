@@ -8,9 +8,6 @@ import com.kushnarenko.service.ImageService;
 import com.kushnarenko.service.ThingService;
 import com.kushnarenko.service.UserService;
 
-import org.apache.commons.compress.utils.IOUtils;
-import org.rosuda.JRI.REXP;
-import org.rosuda.JRI.Rengine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -22,6 +19,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 import static com.kushnarenko.constants.PathConstants.IMAGE_PATH;
@@ -66,30 +66,33 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
 
 
     @Override
-    public String saveImage(MultipartFile file1, MultipartFile file2, String thingId) {
-        String file1Name = IMAGE_PATH + thingId + "1" + IMAGE_TYPE;
-        String file2Name = IMAGE_PATH + thingId + "2" + IMAGE_TYPE;
-        imageService.saveImage(file1, file1Name);
-        imageService.saveImage(file2, file2Name);
+    public String saveImage(List<MultipartFile> files, String thingId) {
+        for (int i = 0; i < files.size(); i++) {
+            String fileName = IMAGE_PATH + thingId + i + IMAGE_TYPE;
+            imageService.saveImage(files.get(i), fileName);
+        }
         return "Its Ok";
     }
 
     @Override
     @Transactional
-    public Thing createRecord(MultipartFile file1, MultipartFile file2, String recordName) {
-        String facebookId = SecurityContextHolder.getContext().getAuthentication().getName();
-        Thing thing = new Thing();
-        thing.setField(recordName);
-        thing.setUser(userService.findByFacebookId(facebookId));
+    public Thing createRecord(List<MultipartFile> files, String recordName) {
+        Thing thing = Thing.builder().field(recordName).user(getCurrentUser()).build();
         thingService.saveThing(thing);
-        String file1Name = thing.getId() + "1" + IMAGE_TYPE;
-        String file2Name = thing.getId() + "2" + IMAGE_TYPE;
-        imageService.saveImage(file1, file1Name);
-        imageService.saveImage(file2, file2Name);
-        thing.setImage1(file1Name);
-        thing.setImage2(file2Name);
+
+        HashMap<String, MultipartFile> fileHashMap = new HashMap<>();
+        files.forEach(file -> fileHashMap.put(thing.getId() + files.indexOf(file) + IMAGE_TYPE, file));
+        fileHashMap.keySet().forEach(fileName -> imageService.saveImage(fileHashMap.get(fileName), fileName));
+        thing.setImages(new ArrayList<>(fileHashMap.keySet()));
+
         thingService.updateThing(thing);
+
         return thing;
+    }
+
+    private User getCurrentUser() {
+        String facebookId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.findByFacebookId(facebookId);
     }
 
     @Override

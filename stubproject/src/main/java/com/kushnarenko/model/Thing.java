@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +22,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class Thing {
 
     @Id
@@ -53,5 +57,10 @@ public class Thing {
                 "id=" + id +
                 ", field='" + field + '\'' +
                 '}';
+    }
+
+    public void setImages(List<String> images){
+        setImage1(images.get(0));
+        setImage2(images.get(1));
     }
 }

@@ -1,4 +1,4 @@
-# if(!require(imager)){install.packages("imager", repos = "http://cran.us.r-project.org")}
+if(!require(imager)){install.packages("imager", repos = "http://cran.us.r-project.org")}
 
 library.path <- .libPaths()[2]
 print(library.path)

@@ -6,13 +6,14 @@ import com.kushnarenko.model.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Set;
 
 public interface ApplicationFacade {
 
-    String saveImage(MultipartFile file1, MultipartFile file2, String thingId);
+    String saveImage(List<MultipartFile> files, String thingId);
 
-    Thing createRecord(MultipartFile file1, MultipartFile file2, String recordName);
+    Thing createRecord(List<MultipartFile> files, String recordName);
 
     Principal findOrCreateUser(Principal principal);
 
