@@ -1,3 +1,4 @@
+print(commandArgs(trailingOnly=TRUE))
 if(!require(imager)){install.packages("imager", repos = "http://cran.us.r-project.org")}
 
 library.path <- .libPaths()[2]
