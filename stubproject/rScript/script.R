@@ -1,15 +1,19 @@
 print(commandArgs(trailingOnly=TRUE))
-if(!require(imager)){install.packages("imager", repos = "http://cran.us.r-project.org")}
 
-library.path <- .libPaths()[2]
-print(library.path)
+#remove.packages(c("imager")) 
+
+#if(!require(imager)){install.packages("imager", repos = "http://cran.us.r-project.org")}
+
+library(stringi)
+library(jpeg)
 library(imager)
+library(EBImage)
 
 parts <- 10
 pxlsize <- 5
 
-i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/1.jpg')
-i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/2.jpg')
+i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/5.jpg')
+i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/6.jpg')
 
 split_image <- function(img,parts_number){
   x <- imsplit(img,'x', parts_number)
@@ -34,17 +38,10 @@ normalize_image <- function(img, parts_number){
 imglist1 <- split_image(i1, parts)
 imglist2 <- split_image(i2, parts)
 
-old.par <- par(mfrow=c(4, 4))
 
+i11 <- i1
+i21 <- i2
 
-i11 <- i1#imglist1 [[5]]
-i21 <- i2#imglist2 [[5]]
-
-# i11 <- imglist1 [[5]]
-# i21 <- imglist2 [[5]]
-
-plot(i11, main="image 1 part")
-plot(i21, main="image 2 part")
 
 
 x1 <- imsplit(i11,"c") %>% add
@@ -56,10 +53,6 @@ thmb2 <- resize(x2,200,200)
 thmb3 <- resize(thmb1,dim(i11)[1],dim(i11)[2]) 
 thmb4 <- resize(thmb2,dim(i21)[1],dim(i21)[2]) 
 
-plot(thmb1, main="thmb1")
-plot(thmb2, main="thmb2")
-plot(thmb3, main="thmb3")
-plot(thmb4, main="thmb4")
 
 
 # print(imcol(i11,1))
@@ -71,36 +64,67 @@ filter <- as.cimg(function(x,y) sign(x-5),10,10)
 # plot(convolve(x1,filter),main="x1")
 # plot(convolve(x2,filter),main="x1")
 
-plot(x1, main="x1")
-plot(x2, main="x2")
 
-# plot(x1-x2, main="x1-x2")
-# plot(x2-x1, main="x2-x1")
-
-plot(x1-thmb3, main="x1-thmb3")
-
-plot(x2-thmb4, main="x2-thmb4")
-
-plot(round(x1-thmb3/max(x1-thmb3),0), main="Binary11")
-plot(round(x2-thmb4/max(x2-thmb4),0), main="Binary21")
-
-# print(x1[1,2])
-# x1[1,1] <- 0.5
-# plot(x1, main="Binary11")
-# plot(fft(x1, inverse = FALSE), main="Binary11")
-
-# plot(thresh(x1-thmb3, 10, 10, 0.05), main="Binary11")
-# plot(thresh(x2-thmb4, 10, 10, 0.05), main="Binary21")
+sub1 <- x1-thmb3
+sub2 <- x2-thmb4
 
 
-print(thmb1)
+binary1 <- round(sub1/max(sub1),2)
+binary2 <- round(sub2/max(sub2),2)
 
 
-par(old.par)
+thresh1 <- thresh(binary1, 10, 10, 0.02)
+thresh2 <- thresh(binary2, 10, 10, 0.02)
 
+res <- i1
 
-# display(x1[44:dim(x1)[1],40:dim(x1)[2],])
-# plot(x1)
-# plot(x2)
-# print(x1[44:dim(x1)[1],40:dim(x1)[2],])
-# print(x2[0:dim(x2)[1],0:dim(x2)[2]])
+for(x in 1:(dim(i1)[1]-1)){
+   for(y in 1:(dim(i1)[2]-1)){
+        if(thresh2[x,y,1,1] == 1){
+          print(paste(x, y, sep="-", collapse=", "))
+          res[x,y,1, 1] <- i2[x,y,1,1]
+          res[x,y,1, 2] <- i2[x,y,1,2]
+          res[x,y,1, 3] <- i1[x,y,1,3]
+          # res[x,y,1, 4] <- i1[x,y,1,4]
+        } else {
+          res[x,y,1, 1] <- i1[x,y,1,1]
+          res[x,y,1, 2] <- i1[x,y,1,2]
+          res[x,y,1, 3] <- i1[x,y,1,3]
+          # res[x,y,1, 4] <- i1[x,y,1,4]
+          # res[x,y,1,1] <- 0
+          # res[x,y,1,2] <- 0
+          # res[x,y,1,3] <- 0
+        }
+   }
+}
+
+pdf('D:/temp/StubSpringProject/stubproject/rScript/filename3.pdf')
+plot(i1)
+plot(i2)
+plot(res)
+dev.off()
+
+# old.par <- par(mfrow=c(5, 5))
+
+# plot(i11, main="image 1 part")
+# plot(i21, main="image 2 part")
+
+# plot(thmb1, main="thmb1")
+# plot(thmb2, main="thmb2")
+# plot(thmb3, main="thmb3")
+# plot(thmb4, main="thmb4")
+
+# plot(x1, main="x1")
+# plot(x2, main="x2")
+
+# plot(sub1, main="x1-thmb3")
+# plot(sub2, main="x2-thmb4")
+
+# plot(binary1 , main="Binary11")
+# plot(binary2 , main="Binary21")
+
+# plot(thresh1 , main="Sub1")
+# plot(thresh2 , main="Sub2")
+
+# par(old.par)
+
