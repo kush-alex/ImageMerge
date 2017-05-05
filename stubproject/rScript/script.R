@@ -1,8 +1,14 @@
 print(commandArgs(trailingOnly=TRUE))
 
-#remove.packages(c("imager")) 
+args <- commandArgs(trailingOnly = TRUE)
 
-#if(!require(imager)){install.packages("imager", repos = "http://cran.us.r-project.org")}
+
+#remove.packages(c("imager")) 
+#source("https://bioconductor.org/biocLite.R")
+#if(!require(stringi)){install.packages("stringi")}
+#if(!require(jpeg)){install.packages("jpeg")}
+#if(!require(imager)){install.packages("imager")}
+#if(!require(imager)){biocLite("EBImage")}
 
 library(stringi)
 library(jpeg)
@@ -12,8 +18,12 @@ library(EBImage)
 parts <- 10
 pxlsize <- 5
 
-i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/5.jpg')
-i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/6.jpg')
+print("START")
+ i1 <- load.image(args[1])
+ i2 <- load.image(args[2])
+
+# i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/5.jpg')
+# i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/6.jpg')
 
 split_image <- function(img,parts_number){
   x <- imsplit(img,'x', parts_number)
@@ -60,7 +70,7 @@ thmb4 <- resize(thmb2,dim(i21)[1],dim(i21)[2])
 # normalize_image(x1,3)
 
 
-filter <- as.cimg(function(x,y) sign(x-5),10,10)
+#filter <- as.cimg(function(x,y) sign(x-5),10,10)
 # plot(convolve(x1,filter),main="x1")
 # plot(convolve(x2,filter),main="x1")
 
@@ -81,29 +91,25 @@ res <- i1
 for(x in 1:(dim(i1)[1]-1)){
    for(y in 1:(dim(i1)[2]-1)){
         if(thresh2[x,y,1,1] == 1){
-          print(paste(x, y, sep="-", collapse=", "))
+         # print(paste(x, y, sep="-", collapse=", "))
           res[x,y,1, 1] <- i2[x,y,1,1]
           res[x,y,1, 2] <- i2[x,y,1,2]
           res[x,y,1, 3] <- i1[x,y,1,3]
-          # res[x,y,1, 4] <- i1[x,y,1,4]
         } else {
           res[x,y,1, 1] <- i1[x,y,1,1]
           res[x,y,1, 2] <- i1[x,y,1,2]
           res[x,y,1, 3] <- i1[x,y,1,3]
-          # res[x,y,1, 4] <- i1[x,y,1,4]
-          # res[x,y,1,1] <- 0
-          # res[x,y,1,2] <- 0
-          # res[x,y,1,3] <- 0
         }
    }
 }
-
+save.image(res,args[3])
 pdf('D:/temp/StubSpringProject/stubproject/rScript/filename3.pdf')
 plot(i1)
 plot(i2)
 plot(res)
 dev.off()
 
+print("DONE")
 # old.par <- par(mfrow=c(5, 5))
 
 # plot(i11, main="image 1 part")

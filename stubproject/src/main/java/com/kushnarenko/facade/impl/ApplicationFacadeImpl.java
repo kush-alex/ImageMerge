@@ -1,5 +1,6 @@
 package com.kushnarenko.facade.impl;
 
+import com.kushnarenko.constants.PathConstants;
 import com.kushnarenko.facade.ApplicationFacade;
 import com.kushnarenko.model.Role;
 import com.kushnarenko.model.Thing;
@@ -23,9 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-
-import static com.kushnarenko.constants.PathConstants.IMAGE_PATH;
-import static com.kushnarenko.constants.PathConstants.IMAGE_TYPE;
 
 @Component
 public class ApplicationFacadeImpl implements ApplicationFacade {
@@ -68,7 +66,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     @Override
     public String saveImage(List<MultipartFile> files, String thingId) {
         for (int i = 0; i < files.size(); i++) {
-            String fileName = IMAGE_PATH + thingId + i + IMAGE_TYPE;
+            String fileName = PathConstants.IMAGE_PATH + thingId + i + PathConstants.IMAGE_TYPE;
             imageService.saveImage(files.get(i), fileName);
         }
         return "Its Ok";
@@ -81,10 +79,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         thingService.saveThing(thing);
 
         HashMap<String, MultipartFile> fileHashMap = new HashMap<>();
-        files.forEach(file -> fileHashMap.put(thing.getId() + files.indexOf(file) + IMAGE_TYPE, file));
+        files.forEach(file -> fileHashMap.put(thing.getId() + files.indexOf(file) + PathConstants.IMAGE_TYPE, file));
         fileHashMap.keySet().forEach(fileName -> imageService.saveImage(fileHashMap.get(fileName), fileName));
         thing.setImages(new ArrayList<>(fileHashMap.keySet()));
-
+        thing.setResultImage(thing.getId() + PathConstants.RESULT + PathConstants.IMAGE_TYPE);
         thingService.updateThing(thing);
 
         return thing;
@@ -99,10 +97,49 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     public MultipartFile getFusedImage(String itemId) {
         Thing thing = thingService.findById(itemId);
 
+        StringBuilder command = new StringBuilder();
+        command.append(PathConstants.R_COMMAND);
+        command.append(" ");
+        command.append(PathConstants.IMAGE_FUSION_SCRIPT_PATH);
+        command.append(" ");
+        command.append(PathConstants.IMAGES + thing.getImage1());
+        command.append(" ");
+        command.append(PathConstants.IMAGES + thing.getImage2());
+        command.append(" ");
+        command.append(PathConstants.IMAGES + thing.getResultImage());
+        System.out.println(command.toString());
+//        try {
+//            Process child = Runtime.getRuntime().exec(command.toString(), null, null);
+//            int code = child.waitFor();
+//            switch (code) {
+//                case 0:
+//                    System.out.println("NORM");
+//                    //normal termination, everything is fine
+//                    break;
+//                case 1:
+//                    System.out.println("NE NORM");
+//                    //Read the error stream then
+//                    BufferedReader message = new BufferedReader(new InputStreamReader(child.getErrorStream()));
+//                    throw new RuntimeException(message.readLine());
+//            }
+//        } catch (IOException | InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+
         try {
-            ProcessBuilder builder = new ProcessBuilder("Rscript", "D:/temp/StubSpringProject/stubproject/rScript/script.R", thing.getImage1(), thing.getImage2());
+            ProcessBuilder builder = new ProcessBuilder(PathConstants.R_COMMAND
+                    , PathConstants.IMAGE_FUSION_SCRIPT_PATH
+                    , PathConstants.IMAGES + thing.getImage1()
+                    , PathConstants.IMAGES + thing.getImage2()
+                    , PathConstants.IMAGES + thing.getResultImage());
             builder.redirectErrorStream(true);
             Process p = builder.start();
+            try {
+                int code = p.waitFor();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while (true) {
@@ -111,6 +148,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                     break;
                 }
                 System.out.println(line);
+                if (line.equals(PathConstants.DONE_COMMAND)) {
+//                    line = r.readLine();
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
