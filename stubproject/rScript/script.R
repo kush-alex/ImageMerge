@@ -25,8 +25,8 @@ pxlsize <- 5
 # i1 <- load.image(args[1])
 # i2 <- load.image(args[2])
 
-i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/1.jpg')
-i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/2.jpg')
+i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/15.jpg')
+i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/16.jpg')
 
 split_image <- function(img,parts_number){
   x <- imsplit(img,'x', parts_number)
@@ -79,16 +79,17 @@ thmb4 <- as.im(thmb4)
 # plot(convolve(x1,filter),main="x1")
 # plot(convolve(x2,filter),main="x1")
 
-sub1 <- x1-c(thmb3$v)
-sub2 <- x2-c(thmb4$v)
+sub1 <- as.im(as.matrix(x1)-thmb3$v)
+sub2 <- as.im(as.matrix(x2)-thmb4$v)
 
-binary1 <- round(sub1/max(sub1),2)
-binary2 <- round(sub2/max(sub2),2)
+# binary1 <- round(sub1/max(sub1),2)
+# binary2 <- round(sub2/max(sub2),2)
 
-thresh1 <- thresh(binary1, 10, 10, 0.02)
-thresh2 <- thresh(binary2, 10, 10, 0.02)
-#thresh1 <- binary1 > 15
-#thresh2 <- binary2 > 15
+# thresh1 <- thresh(sub1, 10, 10, 0.02)
+# thresh2 <- thresh(sub2, 10, 10, 0.02)
+
+thresh1 <- sub1 < 1 & sub1> -1
+thresh2 <- sub2 < 1 & sub2> -1
 
 res <- i1
 
@@ -99,11 +100,12 @@ for(x in 1:(dim(i1)[1]-1)){
           res[x,y,1, 1] <- i2[x,y,1,1]
           res[x,y,1, 2] <- i2[x,y,1,2]
           res[x,y,1, 3] <- i2[x,y,1,3]
-        } else {
-          res[x,y,1, 1] <- i1[x,y,1,1]
-          res[x,y,1, 2] <- i1[x,y,1,2]
-          res[x,y,1, 3] <- i1[x,y,1,3]
-        }
+        } 
+        # else {
+          # res[x,y,1, 1] <- i1[x,y,1,1]
+          # res[x,y,1, 2] <- i1[x,y,1,2]
+          # res[x,y,1, 3] <- i1[x,y,1,3]
+        # }
    }
 }
 #save.image(res,args[3])
@@ -134,7 +136,7 @@ plot(sub2, main="x2-thmb4")
 # plot(binary1 , main="Binary11")
 # plot(binary2 , main="Binary21")
 
-plot(thresh1 , main="Sub1")
-plot(thresh2 , main="Sub2")
+plot(thresh1 , main="thresh1")
+plot(thresh2 , main="thresh2")
 
 par(old.par)
