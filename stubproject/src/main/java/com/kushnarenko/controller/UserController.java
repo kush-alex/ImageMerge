@@ -23,7 +23,7 @@ import java.util.Set;
 public class UserController {
 
     @Autowired
-    ApplicationFacade applicationFacade;
+    private ApplicationFacade applicationFacade;
 
     @RequestMapping(method = RequestMethod.GET)
     public Principal user(Principal principal) {

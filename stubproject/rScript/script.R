@@ -7,24 +7,26 @@ args <- commandArgs(trailingOnly = TRUE)
 #if(!require(stringi)){install.packages("stringi")}
 #if(!require(jpeg)){install.packages("jpeg")}
 #if(!require(imager)){install.packages("imager")}
-#if(!require(imager)){biocLite("EBImage")}
+#if(!require(EBImage)){biocLite("EBImage")}
+#if(!require(spatstat)){install.packages("spatstat")}
 
 library(stringi)
 library(jpeg)
 library(imager)
 library(EBImage)
+library(spatstat)
 
 parts <- 10
 pxlsize <- 5
 
-i1 <- load.image('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/1.jpg')
-i2 <- load.image('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/2.jpg')
+# i1 <- load.image('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/1.jpg')
+# i2 <- load.image('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/2.jpg')
 #print("START")
 # i1 <- load.image(args[1])
 # i2 <- load.image(args[2])
 
-# i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/5.jpg')
-# i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/6.jpg')
+i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/1.jpg')
+i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/2.jpg')
 
 split_image <- function(img,parts_number){
   x <- imsplit(img,'x', parts_number)
@@ -59,8 +61,14 @@ x2 <- imsplit(i21,"c") %>% add
 # thmb3 <- resize(thmb1,dim(i11)[1],dim(i11)[2]) 
 # thmb4 <- resize(thmb2,dim(i21)[1],dim(i21)[2]) 
 
-thmb3 <-
-thmb4 <-
+m1 <- matrix(i1,dim(i1)[1],dim(i1)[2])
+m2 <- matrix(i2,dim(i2)[1],dim(i2)[2])
+
+thmb3 <- as.matrix(blur(as.im(m1), sigma=2))
+thmb4 <- as.matrix(blur(as.im(m2), sigma=2))
+
+thmb3 <- as.im(thmb3)
+thmb4 <- as.im(thmb4)
 
 
 # print(imcol(i11,1))
@@ -71,8 +79,8 @@ thmb4 <-
 # plot(convolve(x1,filter),main="x1")
 # plot(convolve(x2,filter),main="x1")
 
-sub1 <- x1-thmb3
-sub2 <- x2-thmb4
+sub1 <- x1-c(thmb3$v)
+sub2 <- x2-c(thmb4$v)
 
 binary1 <- round(sub1/max(sub1),2)
 binary2 <- round(sub2/max(sub2),2)
@@ -86,8 +94,8 @@ res <- i1
 
 for(x in 1:(dim(i1)[1]-1)){
    for(y in 1:(dim(i1)[2]-1)){
+     print(paste(x, y, sep="-", collapse=", "))
         if(thresh2[x,y,1,1] == 1){
-          print(paste(x, y, sep="-", collapse=", "))
           res[x,y,1, 1] <- i2[x,y,1,1]
           res[x,y,1, 2] <- i2[x,y,1,2]
           res[x,y,1, 3] <- i2[x,y,1,3]
@@ -99,8 +107,8 @@ for(x in 1:(dim(i1)[1]-1)){
    }
 }
 #save.image(res,args[3])
-pdf('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/filename3.pdf')
-# pdf('D:/temp/StubSpringProject/stubproject/rScript/filename3.pdf')
+# pdf('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/filename3.pdf')
+pdf('D:/temp/StubSpringProject/stubproject/rScript/filename3.pdf')
 plot(i1)
 plot(i2)
 plot(res)

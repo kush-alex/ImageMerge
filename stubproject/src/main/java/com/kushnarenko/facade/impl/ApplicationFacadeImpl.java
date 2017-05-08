@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
     }
 
     @Override
-    public MultipartFile getFusedImage(String itemId) {
+    public String getFusedImage(String itemId) {
         Thing thing = thingService.findById(itemId);
 
         StringBuilder command = new StringBuilder();
@@ -107,25 +108,6 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         command.append(PathConstants.IMAGES + thing.getImage2());
         command.append(" ");
         command.append(PathConstants.IMAGES + thing.getResultImage());
-        System.out.println(command.toString());
-//        try {
-//            Process child = Runtime.getRuntime().exec(command.toString(), null, null);
-//            int code = child.waitFor();
-//            switch (code) {
-//                case 0:
-//                    System.out.println("NORM");
-//                    //normal termination, everything is fine
-//                    break;
-//                case 1:
-//                    System.out.println("NE NORM");
-//                    //Read the error stream then
-//                    BufferedReader message = new BufferedReader(new InputStreamReader(child.getErrorStream()));
-//                    throw new RuntimeException(message.readLine());
-//            }
-//        } catch (IOException | InterruptedException e) {
-//            e.printStackTrace();
-//        }
-
 
         try {
             ProcessBuilder builder = new ProcessBuilder(PathConstants.R_COMMAND
@@ -154,7 +136,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        return null;
+        };
+        return PathConstants.IMAGES + thing.getResultImage();
     }
 }

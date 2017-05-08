@@ -1,7 +1,8 @@
 angular.module("app", []).config(function ($httpProvider) {
     $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-}).controller("home", function ($http, $location) {
+}).controller("home", function ($scope, $http, $location) {
     var self = this;
+    $scope.loading = true;
     $http.get("/user").success(function (data) {
         self.auth = data.userAuthentication;
         self.user = data.userAuthentication.details.name;
@@ -14,15 +15,14 @@ angular.module("app", []).config(function ($httpProvider) {
                     var id =data.things[i].id;
                     var field =data.things[i].field;
                     options+='<option value="'+id+'">'+field+'</p>';
-                    $('#recordTable').append("<tr><td>"+ id +"</td><td>"+ field +"</td><td><form id='form"+id+"' method='get' action='/image'  class='form-inline'><input type='hidden' value='"+id+"' name='item'/><button value='Get image' class='btn btn-primary'>Get image</button></form></td><tr>")
+                    $('#recordTable').append("<tr><td>"+ id +"</td>
+                    <td>"+ field +"</td>
+                    <td>
+                    <button value='Get image' ng-click='home.logout("+id+")'  class='btn btn-primary'>Get image</button>
+
+                    </td><tr>")
                 }
                 document.getElementById('chooseRecord').innerHTML = options;
-                /*$('#recordTable').bootstrapTable({
-                    data: data.things,
-                    formatLoadingMessage: function () {
-                                return '';
-                    }
-                });*/
         })
     }).error(function () {
         self.user = "N/A";
@@ -37,4 +37,13 @@ angular.module("app", []).config(function ($httpProvider) {
             self.authenticated = false;
         });
     };
+    self.fuseImage = function (thingId) {
+            $http.get('image', {item : thingId})
+            .success(function () {
+                alert("success");
+            })
+            .error(function (data) {
+                alert("error");
+            });
+        };
 });
