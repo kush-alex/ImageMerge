@@ -29,8 +29,8 @@ pxlsize <- 5
 # i1 <- load.image(args[1])
 # i2 <- load.image(args[2])
 
-i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/7.jpg')
-i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/8.jpg')
+i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/1.jpg')
+i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/2.jpg')
 
 split_image <- function(img,parts_number){
   x <- imsplit(img,'x', parts_number)
@@ -68,8 +68,11 @@ x2 <- imsplit(i21,"c") %>% add
 m1 <- matrix(i1,dim(i1)[1],dim(i1)[2])
 m2 <- matrix(i2,dim(i2)[1],dim(i2)[2])
 
-thmb3 <- as.matrix(blur(as.im(m1), 2))
-thmb4 <- as.matrix(blur(as.im(m2), 2))
+# thmb3 <- as.matrix(blur(as.im(m1), 2))
+# thmb4 <- as.matrix(blur(as.im(m2), 2))
+
+thmb3 <- as.matrix(gaussianSmooth(m1, 5))
+thmb4 <- as.matrix(gaussianSmooth(m2, 5))
 
 thmb3 <- as.im(thmb3)
 thmb4 <- as.im(thmb4)
@@ -84,24 +87,27 @@ thmb4 <- as.im(thmb4)
 sub1 <- as.matrix(x1)-thmb3$v
 sub2 <- as.matrix(x2)-thmb4$v
 
-greyscale1 <- round(sub1/max(sub1),2)
-greyscale2 <- round(sub2/max(sub2),2)
+# greyscale1 <- round(sub1/max(sub1),2)
+# greyscale2 <- round(sub2/max(sub2),2)
 
 # thresh1 <- thresh(sub1, 10, 10, 0.02)
 # thresh2 <- thresh(sub2, 10, 10, 0.02)
 
-thresh1 <- greyscale1 > otsu(greyscale1, range = c(-1, 1))
-thresh2 <- greyscale2 > otsu(greyscale2, range = c(-1, 1))
+# thresh1 <- greyscale1 > otsu(greyscale1, range = c(-1, 1))
+# thresh2 <- greyscale2 > otsu(greyscale2, range = c(-1, 1))
+
+thresh1 <- sub1 > otsu(sub1, range = c(-3, 3))
+thresh2 <- sub2 > otsu(sub2, range = c(-3, 3))
 
 threshNumeric1 <- thresh1 * 1
 threshNumeric2 <- thresh2 * 1
 
-kernelShape1 <- c(1,1,1,1,1)
-kernelShape2 <- c(1,1,1,1,1)
-
-# threshNumeric1 <- dilate(threshNumeric1, kernelShape)
+kernelShape1 <- c(1,1,1)
+kernelShape2 <- c(1,1,1)
 # 
-# threshNumeric2 <- dilate(threshNumeric2, kernelShape)
+threshNumeric1 <- dilate(threshNumeric1, kernelShape)
+
+threshNumeric2 <- dilate(threshNumeric2, kernelShape)
 
 threshNumeric1 <- erode(threshNumeric1, kernelShape1)
 threshNumeric1 <- erode(threshNumeric1, kernelShape1)
@@ -128,7 +134,7 @@ set_pixel <- function(z,x,y){
   }
 }
 
-# mapply(set_pixel , threshNumeric2, row(threshNumeric2),col(threshNumeric2))
+mapply(set_pixel , threshNumeric2, row(threshNumeric2),col(threshNumeric2))
 
 # for(x in n:(dim(i1)[1])){
 #    for(y in n:(dim(i1)[2])){
@@ -165,12 +171,12 @@ plot(i21, main="image 2 part")
 # plot(thmb2, main="thmb2")
 plot(thmb3, main="thmb3")
 plot(thmb4, main="thmb4")
+# 
+# plot(x1, main="x1")
+# plot(x2, main="x2")
 
-plot(x1, main="x1")
-plot(x2, main="x2")
-
-# plot(as.im(sub1), main="x1-thmb3")
-# plot(as.im(sub2), main="x2-thmb4")
+plot(as.im(sub1), main="x1-thmb3")
+plot(as.im(sub2), main="x2-thmb4")
 
 plot(as.im(greyscale1) , main="greyscale11")
 plot(as.im(greyscale2) , main="greyscale21")
