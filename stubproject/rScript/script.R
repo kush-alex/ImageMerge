@@ -68,8 +68,8 @@ x2 <- imsplit(i21,"c") %>% add
 m1 <- matrix(i1,dim(i1)[1],dim(i1)[2])
 m2 <- matrix(i2,dim(i2)[1],dim(i2)[2])
 
-thmb3 <- as.matrix(blur(as.im(m1), 100))
-thmb4 <- as.matrix(blur(as.im(m2), 100))
+thmb3 <- as.matrix(blur(as.im(m1), 2))
+thmb4 <- as.matrix(blur(as.im(m2), 2))
 
 thmb3 <- as.im(thmb3)
 thmb4 <- as.im(thmb4)
@@ -96,17 +96,18 @@ thresh2 <- greyscale2 > otsu(greyscale2, range = c(-1, 1))
 threshNumeric1 <- thresh1 * 1
 threshNumeric2 <- thresh2 * 1
 
-kernelShape <- c(1,1,1,1,1)
+kernelShape1 <- c(1,1,1,1,1)
+kernelShape2 <- c(1,1,1,1,1)
 
 # threshNumeric1 <- dilate(threshNumeric1, kernelShape)
 # 
 # threshNumeric2 <- dilate(threshNumeric2, kernelShape)
 
-threshNumeric1 <- erode(threshNumeric1, kernelShape)
-threshNumeric1 <- erode(threshNumeric1, kernelShape)
+threshNumeric1 <- erode(threshNumeric1, kernelShape1)
+threshNumeric1 <- erode(threshNumeric1, kernelShape1)
 
-threshNumeric2 <- erode(threshNumeric2, kernelShape)
-threshNumeric2 <- erode(threshNumeric2, kernelShape)
+threshNumeric2 <- erode(threshNumeric2, kernelShape2)
+threshNumeric2 <- erode(threshNumeric2, kernelShape2)
 
 # thresh1 <- sub1 > otsu(sub1, range = c(-3, 3))
 # thresh2 <- sub2 > otsu(sub2, range = c(-3, 3))
@@ -120,14 +121,14 @@ n <- 1
 
 set_pixel <- function(z,x,y){
   if(z == 0) {
-    # print(paste(z, x, y, sep="-", collapse=", "))
+    print(paste(z, x, y, sep="-", collapse=", "))
     res[x,y,1, 1] <<- i2[x,y,1,1]
     res[x,y,1, 2] <<- i2[x,y,1,2]
     res[x,y,1, 3] <<- i2[x,y,1,3]
   }
 }
 
-mapply(set_pixel , threshNumeric2, row(threshNumeric2),col(threshNumeric2))
+# mapply(set_pixel , threshNumeric2, row(threshNumeric2),col(threshNumeric2))
 
 # for(x in n:(dim(i1)[1])){
 #    for(y in n:(dim(i1)[2])){
