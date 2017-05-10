@@ -9,6 +9,7 @@ args <- commandArgs(trailingOnly = TRUE)
 #if(!require(imager)){install.packages("imager")}
 #if(!require(EBImage)){biocLite("EBImage")}
 #if(!require(spatstat)){install.packages("spatstat")}
+#if(!require(mmand)){install.packages("mmand")}
 #if(!require(SDMTools)){install.packages("SDMTools")}
 
 library(stringi)
@@ -16,6 +17,7 @@ library(jpeg)
 library(imager)
 library(EBImage)
 library(spatstat)
+library(mmand)
 library(SDMTools)
 
 parts <- 10
@@ -66,8 +68,8 @@ x2 <- imsplit(i21,"c") %>% add
 m1 <- matrix(i1,dim(i1)[1],dim(i1)[2])
 m2 <- matrix(i2,dim(i2)[1],dim(i2)[2])
 
-thmb3 <- as.matrix(blur(as.im(m1), 10))
-thmb4 <- as.matrix(blur(as.im(m2), 10))
+thmb3 <- as.matrix(blur(as.im(m1), 100))
+thmb4 <- as.matrix(blur(as.im(m2), 100))
 
 thmb3 <- as.im(thmb3)
 thmb4 <- as.im(thmb4)
@@ -82,17 +84,32 @@ thmb4 <- as.im(thmb4)
 sub1 <- as.matrix(x1)-thmb3$v
 sub2 <- as.matrix(x2)-thmb4$v
 
-# greyscale1 <- round(sub1/max(sub1),2)
-# greyscale2 <- round(sub2/max(sub2),2)
+greyscale1 <- round(sub1/max(sub1),2)
+greyscale2 <- round(sub2/max(sub2),2)
 
-thresh1 <- thresh(sub1, 10, 10, 0.02)
-thresh2 <- thresh(sub2, 10, 10, 0.02)
+# thresh1 <- thresh(sub1, 10, 10, 0.02)
+# thresh2 <- thresh(sub2, 10, 10, 0.02)
 
-# thresh1 <- greyscale1$v > otsu(greyscale1$v, range = c(-1, 1))
-# thresh2 <- greyscale2$v > otsu(greyscale2$v, range = c(-1, 1))
+thresh1 <- greyscale1 > otsu(greyscale1, range = c(-1, 1))
+thresh2 <- greyscale2 > otsu(greyscale2, range = c(-1, 1))
 
-thresh1 <- sub1 > otsu(sub1, range = c(-3, 3))
-thresh2 <- sub2 > otsu(sub2, range = c(-3, 3))
+threshNumeric1 <- thresh1 * 1
+threshNumeric2 <- thresh2 * 1
+
+kernelShape <- c(1,1,1,1,1)
+
+# threshNumeric1 <- dilate(threshNumeric1, kernelShape)
+# 
+# threshNumeric2 <- dilate(threshNumeric2, kernelShape)
+
+threshNumeric1 <- erode(threshNumeric1, kernelShape)
+threshNumeric1 <- erode(threshNumeric1, kernelShape)
+
+threshNumeric2 <- erode(threshNumeric2, kernelShape)
+threshNumeric2 <- erode(threshNumeric2, kernelShape)
+
+# thresh1 <- sub1 > otsu(sub1, range = c(-3, 3))
+# thresh2 <- sub2 > otsu(sub2, range = c(-3, 3))
 
 # thresh2 <- !thresh2
 
@@ -101,24 +118,35 @@ res <- i1
 
 n <- 1
 
-for(x in n:(dim(i1)[1]-n)){
-   for(y in n:(dim(i1)[2]-n)){
-        print(paste(x, y, sep="-", collapse=", "))
-     if(thresh2[x,y] == FALSE){
-     # if(thresh1[x,y] == FALSE & mean(thresh2[x-n:x+n,y-n:y+n])>mean(thresh1[x-n:x+n,y-n:y+n])){
-       # if(mean(thresh2[x-n:x+n,y-n:y+n])>mean(thresh1[x-n:x+n,y-n:y+n])){
-          res[x,y,1, 1] <- i2[x,y,1,1]
-          res[x,y,1, 2] <- i2[x,y,1,2]
-          res[x,y,1, 3] <- i2[x,y,1,3]
-        }
-        # else {
-          # res[x,y,1, 1] <- i1[x,y,1,1]
-          # res[x,y,1, 2] <- i1[x,y,1,2]
-          # res[x,y,1, 3] <- i1[x,y,1,3]
-        # }
-   }
+set_pixel <- function(z,x,y){
+  if(z == 0) {
+    # print(paste(z, x, y, sep="-", collapse=", "))
+    res[x,y,1, 1] <<- i2[x,y,1,1]
+    res[x,y,1, 2] <<- i2[x,y,1,2]
+    res[x,y,1, 3] <<- i2[x,y,1,3]
+  }
 }
-#save.image(res,args[3])
+
+mapply(set_pixel , threshNumeric2, row(threshNumeric2),col(threshNumeric2))
+
+# for(x in n:(dim(i1)[1])){
+#    for(y in n:(dim(i1)[2])){
+#      if(threshNumeric2[x,y] == 0){
+#      # if(mean(thresh2[x-n:x+n,y-n:y+n])>mean(thresh1[x-n:x+n,y-n:y+n])){
+#        # if(mean(thresh2[x-n:x+n,y-n:y+n])>mean(thresh1[x-n:x+n,y-n:y+n])){
+#           print(paste(x, y, sep="-", collapse=", "))
+#           res[x,y,1, 1] <- i2[x,y,1,1]
+#           res[x,y,1, 2] <- i2[x,y,1,2]
+#           res[x,y,1, 3] <- i2[x,y,1,3]
+#         }
+#         # else {
+#           # res[x,y,1, 1] <- i1[x,y,1,1]
+#           # res[x,y,1, 2] <- i1[x,y,1,2]
+#           # res[x,y,1, 3] <- i1[x,y,1,3]
+#         # }
+#    }
+# }
+# save.image(res,args[3])
 # pdf('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/filename3.pdf')
 pdf('D:/temp/StubSpringProject/stubproject/rScript/filename3.pdf')
 plot(i1)
@@ -140,13 +168,15 @@ plot(thmb4, main="thmb4")
 plot(x1, main="x1")
 plot(x2, main="x2")
 
-plot(as.im(sub1), main="x1-thmb3")
-plot(as.im(sub2), main="x2-thmb4")
+# plot(as.im(sub1), main="x1-thmb3")
+# plot(as.im(sub2), main="x2-thmb4")
 
-plot(as.im(greyscale1$v) , main="greyscale11")
-plot(as.im(greyscale2$v) , main="greyscale21")
+plot(as.im(greyscale1) , main="greyscale11")
+plot(as.im(greyscale2) , main="greyscale21")
 
 plot(as.raster(thresh1) , main="thresh1")
 plot(as.raster(thresh2) , main="thresh2")
+plot(as.raster(threshNumeric1) , main="threshNumeric1")
+plot(as.raster(threshNumeric2) , main="threshNumeric2")
 
 par(old.par)
