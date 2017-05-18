@@ -29,8 +29,8 @@ pxlsize <- 5
 # i1 <- load.image(args[1])
 # i2 <- load.image(args[2])
 
-i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/1.jpg')
-i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/2.jpg')
+i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/9.jpg')
+i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/10.jpg')
 
 split_image <- function(img,parts_number){
   x <- imsplit(img,'x', parts_number)
@@ -59,6 +59,8 @@ i21 <- i2
 x1 <- imsplit(i11,"c") %>% add
 x2 <- imsplit(i21,"c") %>% add
 
+smoothness <- 0.5
+
 # thmb1 <- resize(x1,200,200) 
 # thmb2 <- resize(x2,200,200) 
 
@@ -68,11 +70,11 @@ x2 <- imsplit(i21,"c") %>% add
 m1 <- matrix(i1,dim(i1)[1],dim(i1)[2])
 m2 <- matrix(i2,dim(i2)[1],dim(i2)[2])
 
-# thmb3 <- as.matrix(blur(as.im(m1), 2))
-# thmb4 <- as.matrix(blur(as.im(m2), 2))
+thmb3 <- as.matrix(blur(as.im(m1), smoothness))
+thmb4 <- as.matrix(blur(as.im(m2), smoothness))
 
-thmb3 <- as.matrix(gaussianSmooth(m1, 5))
-thmb4 <- as.matrix(gaussianSmooth(m2, 5))
+# thmb3 <- as.matrix(gaussianSmooth(m1, 3))
+# thmb4 <- as.matrix(gaussianSmooth(m2, 3))
 
 thmb3 <- as.im(thmb3)
 thmb4 <- as.im(thmb4)
@@ -84,8 +86,24 @@ thmb4 <- as.im(thmb4)
 
 #filter <- as.cimg(function(x,y) sign(x-5),10,10)
 
-sub1 <- as.matrix(x1)-thmb3$v
-sub2 <- as.matrix(x2)-thmb4$v
+# sub1 <- imsubtract(as.matrix(x1),thmb3$v)
+# sub2 <- imsubtract(as.matrix(x2),thmb4$v) 
+sub1 <- m1 - thmb3$v
+sub2 <- m2 - thmb4$v
+
+
+sub3 <- as.matrix(blur(as.im(sub1), smoothness))
+sub4 <- as.matrix(blur(as.im(sub2), smoothness))
+
+
+sub3 <- as.im(sub3)
+sub4 <- as.im(sub4)
+
+sub1 <- sub1 - sub3$v
+sub2 <- sub2 - sub4$v
+
+# sub1 <- sweep(as.matrix(x1), 1, thmb3$v)
+# sub2 <- sweep(as.matrix(x2), 1, thmb4$v)
 
 # greyscale1 <- round(sub1/max(sub1),2)
 # greyscale2 <- round(sub2/max(sub2),2)
@@ -96,24 +114,29 @@ sub2 <- as.matrix(x2)-thmb4$v
 # thresh1 <- greyscale1 > otsu(greyscale1, range = c(-1, 1))
 # thresh2 <- greyscale2 > otsu(greyscale2, range = c(-1, 1))
 
-thresh1 <- sub1 > otsu(sub1, range = c(-3, 3))
-thresh2 <- sub2 > otsu(sub2, range = c(-3, 3))
+thresh1 <- sub1 > otsu(sub1, range = c(-1, 1))
+thresh2 <- sub2 > otsu(sub2, range = c(-1, 1))
 
 threshNumeric1 <- thresh1 * 1
 threshNumeric2 <- thresh2 * 1
 
-kernelShape1 <- c(1,1,1)
-kernelShape2 <- c(1,1,1)
+kernelShape1 <- makeBrush(5, shape='diamond')  
+kernelShape2 <- makeBrush(5, shape='diamond')  
 # 
-threshNumeric1 <- dilate(threshNumeric1, kernelShape)
-
-threshNumeric2 <- dilate(threshNumeric2, kernelShape)
+# threshNumeric1 <- dilate(threshNumeric1, kernelShape)
+# 
+# threshNumeric2 <- dilate(threshNumeric2, kernelShape)
 
 threshNumeric1 <- erode(threshNumeric1, kernelShape1)
 threshNumeric1 <- erode(threshNumeric1, kernelShape1)
+threshNumeric2 <- erode(threshNumeric2, kernelShape2)
+threshNumeric2 <- erode(threshNumeric2, kernelShape2)
+threshNumeric1 <- dilate(threshNumeric1, kernelShape1)
 
-threshNumeric2 <- erode(threshNumeric2, kernelShape2)
-threshNumeric2 <- erode(threshNumeric2, kernelShape2)
+threshNumeric2 <- dilate(threshNumeric2, kernelShape2)
+# threshNumeric1 <- dilate(threshNumeric1, kernelShape1)
+# 
+# threshNumeric2 <- dilate(threshNumeric2, kernelShape2)
 
 # thresh1 <- sub1 > otsu(sub1, range = c(-3, 3))
 # thresh2 <- sub2 > otsu(sub2, range = c(-3, 3))
@@ -126,7 +149,13 @@ res <- i1
 n <- 1
 
 set_pixel <- function(z,x,y){
-  if(z == 0) {
+  # if(threshNumeric2[x,y]==threshNumeric1[x,y])
+  # {
+  #   res[x,y,1, 1] <<- (i2[x,y,1,1]+i1[x,y,1,1])/2
+  #   res[x,y,1, 2] <<- (i2[x,y,1,2]+i1[x,y,1,2])/2
+  #   res[x,y,1, 3] <<- (i2[x,y,1,3]+i1[x,y,1,3])/2
+  # }else 
+    if(z == 0) {
     print(paste(z, x, y, sep="-", collapse=", "))
     res[x,y,1, 1] <<- i2[x,y,1,1]
     res[x,y,1, 2] <<- i2[x,y,1,2]
@@ -158,6 +187,8 @@ mapply(set_pixel , threshNumeric2, row(threshNumeric2),col(threshNumeric2))
 pdf('D:/temp/StubSpringProject/stubproject/rScript/filename3.pdf')
 plot(i1)
 plot(i2)
+plot(as.raster(threshNumeric1))
+plot(as.raster(threshNumeric2))
 plot(res)
 dev.off()
 
@@ -172,14 +203,14 @@ plot(i21, main="image 2 part")
 plot(thmb3, main="thmb3")
 plot(thmb4, main="thmb4")
 # 
-# plot(x1, main="x1")
-# plot(x2, main="x2")
+plot(x1, main="x1")
+plot(x2, main="x2")
 
-plot(as.im(sub1), main="x1-thmb3")
-plot(as.im(sub2), main="x2-thmb4")
+image(sub1, main="x1-thmb3")
+image(sub2, main="x2-thmb4")
 
-plot(as.im(greyscale1) , main="greyscale11")
-plot(as.im(greyscale2) , main="greyscale21")
+# image(greyscale1 , main="greyscale11")
+# image(greyscale2 , main="greyscale21")
 
 plot(as.raster(thresh1) , main="thresh1")
 plot(as.raster(thresh2) , main="thresh2")
