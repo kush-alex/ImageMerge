@@ -15,12 +15,7 @@ angular.module("app", []).config(function ($httpProvider) {
                     var id =data.things[i].id;
                     var field =data.things[i].field;
                     options+='<option value="'+id+'">'+field+'</p>';
-                    $('#recordTable').append("<tr><td>"+ id +"</td>
-                    <td>"+ field +"</td>
-                    <td>
-                    <button value='Get image' ng-click='home.logout("+id+")'  class='btn btn-primary'>Get image</button>
-
-                    </td><tr>")
+                    $('#recordTable').append("<tr><td>"+ id +"</td><td>"+ field +"</td><td><form id='form"+id+"' method='get' action='/image' target='_blank'  class='form-inline'><input type='hidden' value='"+id+"' name='item'/><button value='Get image' class='btn btn-primary'>Get image</button></form></td><tr>")
                 }
                 document.getElementById('chooseRecord').innerHTML = options;
         })
@@ -37,13 +32,4 @@ angular.module("app", []).config(function ($httpProvider) {
             self.authenticated = false;
         });
     };
-    self.fuseImage = function (thingId) {
-            $http.get('image', {item : thingId})
-            .success(function () {
-                alert("success");
-            })
-            .error(function (data) {
-                alert("error");
-            });
-        };
 });

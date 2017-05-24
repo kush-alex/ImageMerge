@@ -2,6 +2,7 @@ package com.kushnarenko.controller;
 
 import com.kushnarenko.facade.ApplicationFacade;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
@@ -31,13 +31,8 @@ public class ImageController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getFusedUmage(@RequestParam("item") String item) throws IOException {
         String fusedImage = applicationFacade.getFusedImage(item);
-        File imgPath = new File(fusedImage);
-        BufferedImage bufferedImage = ImageIO.read(imgPath);
-
-        WritableRaster raster = bufferedImage.getRaster();
-        DataBufferByte data = (DataBufferByte) raster.getDataBuffer();
-
-        return (data.getData());
+        InputStream stream = new BufferedInputStream(new FileInputStream(fusedImage));
+        return IOUtils.toByteArray(stream);
     }
 
 }

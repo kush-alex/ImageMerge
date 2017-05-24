@@ -80,7 +80,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         thingService.saveThing(thing);
 
         HashMap<String, MultipartFile> fileHashMap = new HashMap<>();
-        files.forEach(file -> fileHashMap.put(thing.getId() + files.indexOf(file) + PathConstants.IMAGE_TYPE, file));
+        files.forEach(file -> fileHashMap.put(PathConstants.IMAGE + thing.getId() + files.indexOf(file) + PathConstants.IMAGE_TYPE, file));
         fileHashMap.keySet().forEach(fileName -> imageService.saveImage(fileHashMap.get(fileName), fileName));
         thing.setImages(new ArrayList<>(fileHashMap.keySet()));
         thing.setResultImage(thing.getId() + PathConstants.RESULT + PathConstants.IMAGE_TYPE);
@@ -116,12 +116,9 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                     , PathConstants.IMAGES + thing.getImage2()
                     , PathConstants.IMAGES + thing.getResultImage());
             builder.redirectErrorStream(true);
+            builder.command().forEach(System.out::print);
+            System.out.println();
             Process p = builder.start();
-            try {
-                int code = p.waitFor();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while (true) {
@@ -130,13 +127,10 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
                     break;
                 }
                 System.out.println(line);
-                if (line.equals(PathConstants.DONE_COMMAND)) {
-//                    line = r.readLine();
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();
-        };
+        }
         return PathConstants.IMAGES + thing.getResultImage();
     }
 }

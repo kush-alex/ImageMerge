@@ -3,14 +3,21 @@ print(commandArgs(trailingOnly=TRUE))
 args <- commandArgs(trailingOnly = TRUE)
 
 #remove.packages(c("imager"))
-#source("https://bioconductor.org/biocLite.R")
-#if(!require(stringi)){install.packages("stringi")}
-#if(!require(jpeg)){install.packages("jpeg")}
-#if(!require(imager)){install.packages("imager")}
-#if(!require(EBImage)){biocLite("EBImage")}
-#if(!require(spatstat)){install.packages("spatstat")}
-#if(!require(mmand)){install.packages("mmand")}
-#if(!require(SDMTools)){install.packages("SDMTools")}
+
+# local({r <- getOption("repos")
+# r["CRAN"] <- "http://cran.r-project.org"
+# options(repos=r)
+# })
+# 
+# source("https://bioconductor.org/biocLite.R")
+# if(!require(stringi)){install.packages("stringi")}
+# if(!require(jpeg)){install.packages("jpeg")}
+# if(!require(imager)){install.packages("imager")}
+# if(!require(EBImage)){biocLite("EBImage")}
+# if(!require(spatstat)){install.packages("spatstat")}
+# if(!require(mmand)){install.packages("mmand")}
+# if(!require(SDMTools)){install.packages("SDMTools")}
+# install.packages("Runiversal") 
 
 library(stringi)
 library(jpeg)
@@ -25,33 +32,33 @@ pxlsize <- 5
 
 # i1 <- load.image('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/1.jpg')
 # i2 <- load.image('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/2.jpg')
-#print("START")
-# i1 <- load.image(args[1])
-# i2 <- load.image(args[2])
+print("START")
+i1 <- load.image(args[1])
+i2 <- load.image(args[2])
 
-i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/9.jpg')
-i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/10.jpg')
+# i1 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/9.jpg')
+# i2 <- load.image('D:/temp/StubSpringProject/stubproject/rScript/10.jpg')
 
-split_image <- function(img,parts_number){
-  x <- imsplit(img,'x', parts_number)
-  imglist <- list()
-  for(i in 1:parts_number) {
-    y <- imsplit(x[[i]],'y', parts_number)
-    imglist<- c(imglist, y)
-  }
-  return(imglist)
-}
+# split_image <- function(img,parts_number){
+#   x <- imsplit(img,'x', parts_number)
+#   imglist <- list()
+#   for(i in 1:parts_number) {
+#     y <- imsplit(x[[i]],'y', parts_number)
+#     imglist<- c(imglist, y)
+#   }
+#   return(imglist)
+# }
+# 
+# normalize_image <- function(img, parts_number){
+#   list <- split_image(img, parts_number)
+#   for(index in 1:length(list)) {
+#     part<-list[[index]]
+#     
+#   }
+# }
 
-normalize_image <- function(img, parts_number){
-  list <- split_image(img, parts_number)
-  for(index in 1:length(list)) {
-    part<-list[[index]]
-    
-  }
-}
-
-imglist1 <- split_image(i1, parts)
-imglist2 <- split_image(i2, parts)
+# imglist1 <- split_image(i1, parts)
+# imglist2 <- split_image(i2, parts)
 
 i11 <- i1
 i21 <- i2
@@ -149,14 +156,8 @@ res <- i1
 n <- 1
 
 set_pixel <- function(z,x,y){
-  # if(threshNumeric2[x,y]==threshNumeric1[x,y])
-  # {
-  #   res[x,y,1, 1] <<- (i2[x,y,1,1]+i1[x,y,1,1])/2
-  #   res[x,y,1, 2] <<- (i2[x,y,1,2]+i1[x,y,1,2])/2
-  #   res[x,y,1, 3] <<- (i2[x,y,1,3]+i1[x,y,1,3])/2
-  # }else 
     if(z == 0) {
-    print(paste(z, x, y, sep="-", collapse=", "))
+    # print(paste(z, x, y, sep="-", collapse=", "))
     res[x,y,1, 1] <<- i2[x,y,1,1]
     res[x,y,1, 2] <<- i2[x,y,1,2]
     res[x,y,1, 3] <<- i2[x,y,1,3]
@@ -182,39 +183,39 @@ mapply(set_pixel , threshNumeric2, row(threshNumeric2),col(threshNumeric2))
 #         # }
 #    }
 # }
-# save.image(res,args[3])
+save.image(res,args[3])
 # pdf('D:/Uni/Diplom/SpringStubProject/stubproject/rScript/filename3.pdf')
-pdf('D:/temp/StubSpringProject/stubproject/rScript/filename3.pdf')
-plot(i1)
-plot(i2)
-plot(as.raster(threshNumeric1))
-plot(as.raster(threshNumeric2))
-plot(res)
-dev.off()
-
+# pdf('D:/temp/StubSpringProject/stubproject/rScript/filename3.pdf')
+# plot(i1)
+# plot(i2)
+# plot(as.raster(threshNumeric1))
+# plot(as.raster(threshNumeric2))
+# plot(res)
+# dev.off()
+# 
 print("DONE")
-old.par <- par(mfrow=c(3, 4))
-
-plot(i11, main="image 1 part")
-plot(i21, main="image 2 part")
+# old.par <- par(mfrow=c(3, 4))
+# 
+# plot(i11, main="image 1 part")
+# plot(i21, main="image 2 part")
 
 # plot(thmb1, main="thmb1")
 # plot(thmb2, main="thmb2")
-plot(thmb3, main="thmb3")
-plot(thmb4, main="thmb4")
+# plot(thmb3, main="thmb3")
+# plot(thmb4, main="thmb4")
+# # 
+# plot(x1, main="x1")
+# plot(x2, main="x2")
 # 
-plot(x1, main="x1")
-plot(x2, main="x2")
-
-image(sub1, main="x1-thmb3")
-image(sub2, main="x2-thmb4")
+# image(sub1, main="x1-thmb3")
+# image(sub2, main="x2-thmb4")
 
 # image(greyscale1 , main="greyscale11")
 # image(greyscale2 , main="greyscale21")
-
-plot(as.raster(thresh1) , main="thresh1")
-plot(as.raster(thresh2) , main="thresh2")
-plot(as.raster(threshNumeric1) , main="threshNumeric1")
-plot(as.raster(threshNumeric2) , main="threshNumeric2")
-
-par(old.par)
+# 
+# plot(as.raster(thresh1) , main="thresh1")
+# plot(as.raster(thresh2) , main="thresh2")
+# plot(as.raster(threshNumeric1) , main="threshNumeric1")
+# plot(as.raster(threshNumeric2) , main="threshNumeric2")
+# 
+# par(old.par)
