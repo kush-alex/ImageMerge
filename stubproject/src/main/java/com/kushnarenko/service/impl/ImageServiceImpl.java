@@ -1,6 +1,5 @@
 package com.kushnarenko.service.impl;
 
-import com.kushnarenko.constants.PathConstants;
 import com.kushnarenko.service.ImageService;
 
 import org.springframework.stereotype.Service;

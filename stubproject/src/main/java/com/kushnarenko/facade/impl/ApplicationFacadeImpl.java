@@ -80,7 +80,7 @@ public class ApplicationFacadeImpl implements ApplicationFacade {
         thingService.saveThing(thing);
 
         HashMap<String, MultipartFile> fileHashMap = new HashMap<>();
-        files.forEach(file -> fileHashMap.put(PathConstants.IMAGE + thing.getId() + files.indexOf(file) + PathConstants.IMAGE_TYPE, file));
+        files.forEach(file -> fileHashMap.put(String.format("%s%d%d%s", PathConstants.IMAGE, thing.getId(), files.indexOf(file) + 1, PathConstants.IMAGE_TYPE), file));
         fileHashMap.keySet().forEach(fileName -> imageService.saveImage(fileHashMap.get(fileName), fileName));
         thing.setImages(new ArrayList<>(fileHashMap.keySet()));
         thing.setResultImage(thing.getId() + PathConstants.RESULT + PathConstants.IMAGE_TYPE);
